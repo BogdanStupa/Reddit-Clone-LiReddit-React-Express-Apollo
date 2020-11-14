@@ -9,6 +9,7 @@
       "esnext.asynciterable",
       "es2015.promise"
     ],
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
     "moduleResolution": "node",
