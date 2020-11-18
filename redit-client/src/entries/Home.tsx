@@ -6,10 +6,11 @@ interface ComponentProps {
 };
 
 
+
+
 const Home: React.FC<ComponentProps> = () => {
-    
     return (
-         <div>Home</div>
+        <div>Home </div>
     );
 }
 

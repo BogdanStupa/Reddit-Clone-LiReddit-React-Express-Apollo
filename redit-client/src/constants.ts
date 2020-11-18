@@ -1,16 +1,13 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     "LABELS": {
-        "NAVBAR":{
-            "LIREDIT": "LiReddit",
+        "LIREDIT":"LiReddit",
+        "ROUTE_NAMES":{
             "SIGNUP": "SignUp",
             "LOGOUT": "LogOut",
             "LOGIN": "LogIn"
         },
-        "SIGNUP":{
-            "SIGNUP": "SignUp"
-        },
-        "NAMES":{
+        "FORM_NAMES":{
             "USERNAME": "Username",
             "PASSWORD": "Password",
             "CONFIRM_PASSWORD": "Confirm password"

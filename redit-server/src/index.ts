@@ -4,16 +4,15 @@ import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import redis from 'redis';
-import session from 'express-session';
-import connectRedis from "connect-redis";
 import { __prod__ } from "./constants";
 import { MyContext } from "./types";
 import cors from "cors";
+import { isAuth } from "./middlewares/is-auth";
+import  * as dotenv from "dotenv";
 
+dotenv.config();
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);
@@ -21,35 +20,18 @@ const main = async () => {
 
     const app = express();
 
-    const RedisStore = connectRedis(session);
-    const redisClient = redis.createClient();
     app.use(cors({
         credentials: true,
         origin: "http://localhost:3000"
     }));
+    
+    app.use(isAuth);
+
     app.set('trust proxy', 1);
-    app.use(
-        session({
-            name: "qid", //to see this as a cookie in Application set in settings: "request.credentials": "include"
-            store: new RedisStore({ 
-                client: redisClient,
-                disableTouch: true,
-            }),
-            cookie: {
-                maxAge: 1000 * 60 * 60, //1 hour
-                httpOnly: true,
-                secure: __prod__, // cookie only works in https  
-                sameSite: "lax", //csrf,
-            },
-            saveUninitialized: false,
-            secret: 'keyboard cat',
-            resave: false,
-        })
-    );
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [HelloResolver, PostResolver, UserResolver],
+            resolvers: [PostResolver, UserResolver],
             validate: false
         }),
         context: ({ req, res }): MyContext => ({ em: orm.em, req, res})

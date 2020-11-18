@@ -1,14 +1,17 @@
 import { Post } from "../entities/Post";
 import { MyContext } from "src/types";
 import { Resolver, Query, Ctx, Arg, Int, Mutation } from "type-graphql";
+import { handleAuthErrors } from "../utils/error-handing";
 
 
 @Resolver()
 export class PostResolver {
     @Query(() => [Post])
     posts(
-        @Ctx() { em }: MyContext
+        @Ctx() { em, req }: MyContext
     ): Promise<Post[]>{
+        if(req.authError) handleAuthErrors(req.authError);
+        
         return em.find(Post, {});
     }
 
@@ -38,9 +41,7 @@ export class PostResolver {
     ): Promise<Post | null>{
         const post = await em.findOne(Post, { id });
         
-        if(!post) {
-            return null;
-        }
+        if(!post) return null;
 
         if(typeof title !== "undefined"){
             post.title = title;

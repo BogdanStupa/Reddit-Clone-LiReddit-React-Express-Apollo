@@ -1,0 +1,5 @@
+query RefreshAccessToken($options: RefreshAccessTokenRequest!){
+    refreshAccessToken(options: $options){
+        newAccessToken
+    }
+}

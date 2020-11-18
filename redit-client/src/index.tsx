@@ -1,27 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { createClient, Provider } from 'urql';
+import { ApolloProvider } from '@apollo/client';
 import './styles/index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
 import AppRouter from './react-router';
-import constants from  "./constants";
+import { client } from "./apollo";
 
-const client = createClient({ 
-    url: constants.GRAPHQL.PATH,
-    fetchOptions: {
-        credentials: "include"
-    }
-});
 
 ReactDOM.render(
     <React.StrictMode>
-        <Provider value={client}>
+        <ApolloProvider client={client}>
             <BrowserRouter>
                 <AppRouter />
             </BrowserRouter>
-        </Provider>
+        </ApolloProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -12,18 +12,23 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement>  & {
 };
 
 
-const InputField: React.FC<InputFieldProps> = (props: InputFieldProps) => {
+const InputField: React.FC<InputFieldProps> = ({
+    label,
+    marginTop,
+    size: _,
+    ...props
+}) => {
     const [field, { error }] = useField(props);
     return (
         <div style={{
-            marginTop:props.marginTop
+            marginTop: marginTop
         }}>
-        <FormLabel htmlFor={props.name}>{props.label}</FormLabel>
+        <FormLabel htmlFor={props.name}>{label}</FormLabel>
         <FormControl
             isInvalid={Boolean(error?.length)}
             id={props.name}
-            placeholder={props.placeholder}
             {...field}
+            {...props}
         >
         </FormControl>
         <FormControl.Feedback type="invalid" >

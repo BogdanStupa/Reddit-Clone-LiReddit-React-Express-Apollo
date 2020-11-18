@@ -1,0 +1,3 @@
+mutation Logout($options: RefreshAccessTokenRequest!){
+  logout(options: $options)
+}
