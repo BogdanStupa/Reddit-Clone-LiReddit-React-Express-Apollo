@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
-import microConfig from "./mikro-orm.config";
+import { createConnection } from "typeorm";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -11,12 +10,21 @@ import { MyContext } from "./types";
 import cors from "cors";
 import { isAuth } from "./middlewares/is-auth";
 import  * as dotenv from "dotenv";
+import { User } from "./entities/User";
+import { Post } from "./entities/Post";
 
 dotenv.config();
 
 const main = async () => {
-    const orm = await MikroORM.init(microConfig);
-    await orm.getMigrator().up();
+    await createConnection({
+        type: "postgres",
+        database: "lireddit",
+        username:"postgres",
+        password: "new_password",
+        logging: true,
+        synchronize: true,
+        entities: [User, Post],
+    });
 
     const app = express();
 
@@ -34,7 +42,7 @@ const main = async () => {
             resolvers: [PostResolver, UserResolver],
             validate: false
         }),
-        context: ({ req, res }): MyContext => ({ em: orm.em, req, res})
+        context: ({ req, res }): MyContext => ({ req, res})
     }); 
 
     apolloServer.applyMiddleware({ 

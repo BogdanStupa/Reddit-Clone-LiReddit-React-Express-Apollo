@@ -35,9 +35,6 @@ export class UserResponse {
 
     @Field(() => LoginUserResponse, { nullable: true })
     user?: LoginUserResponse;
-
-    @Field({nullable: true})
-    token?: string;
 }
 
 @InputType()

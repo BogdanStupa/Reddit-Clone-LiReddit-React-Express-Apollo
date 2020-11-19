@@ -1,4 +1,3 @@
-import { EntityManager, IDatabaseDriver, Connection } from "@mikro-orm/core";
 import { Request, Response } from "express";
 import { ErrorAuthCode } from "./error-codes-types/auth";
 
@@ -19,7 +18,6 @@ export type ReqType = Request & {
 
 
 export type MyContext = {
-    em: EntityManager<any> & EntityManager<IDatabaseDriver<Connection>>;
     req: ReqType;
     res: Response;
 };

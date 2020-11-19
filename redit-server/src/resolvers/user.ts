@@ -16,19 +16,17 @@ import { authValidation } from "../data-validation/auth";
 export class UserResolver {
     @Mutation(() => UserResponse) 
     async register(
-        @Arg("options") options: UsernamePasswordInput,
-        @Ctx() { em }: MyContext
-    ): Promise<UserResponse> {
+        @Arg("options") options: UsernamePasswordInput): Promise<UserResponse> {
         const authInputError = authValidation(options);
         if(authInputError) return authInputError;
         
         const hashedPassword = await argon2.hash(options.password);
-        const user = await em.create(User, { 
-            username: options.username,
-            password: hashedPassword
-        }); 
-        try { 
-            await em.persistAndFlush(user);         
+        let user = null;
+        try {
+            user = await User.create({ 
+                username: options.username,
+                password: hashedPassword
+            }).save();
         }catch(error){
             //duplicate username error
             if(error.code === "23505"){
@@ -58,9 +56,9 @@ export class UserResolver {
     @Mutation(() => UserResponse) 
     async login(
         @Arg("options") options: UsernamePasswordInput,
-        @Ctx() { em, res }: MyContext
+        @Ctx() { res }: MyContext
     ): Promise<UserResponse> {
-        const user = await em.findOne(User, { username: options.username });   
+        const user = await User.findOne({ where: { username: options.username } });   
         if(!user){
             return {
                 errors: [{
@@ -138,9 +136,7 @@ export class UserResolver {
     }
 
     @Query(() => [User], { nullable: true }) 
-    async getUsers(
-        @Ctx() { em }: MyContext
-    ): Promise<User[] | null> {
-        return await em.find(User, {});
+    async getUsers(): Promise<User[] | null> {
+        return User.find();
     }
 }
